@@ -28,8 +28,12 @@ impl<HCX> HashStable<HCX> for ModuleCodegenResult {
 }
 
 fn make_module(sess: &Session, isa: Box<dyn TargetIsa>, name: String) -> ObjectModule {
-    let mut builder =
-        ObjectBuilder::new(isa, name + ".o", cranelift_module::default_libcall_names()).unwrap();
+    let mut builder = ObjectBuilder::new(
+        isa,
+        name + ".o",
+        cranelift_module::default_libcall_names(),
+        cranelift_module::default_known_symbol_names()
+    ).unwrap();
     // Unlike cg_llvm, cg_clif defaults to disabling -Zfunction-sections. For cg_llvm binary size
     // is important, while cg_clif cares more about compilation times. Enabling -Zfunction-sections
     // can easily double the amount of time necessary to perform linking.

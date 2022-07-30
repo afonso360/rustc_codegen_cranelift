@@ -114,14 +114,6 @@ pub fn main() {
         host_triple.clone()
     };
 
-    if target_triple.ends_with("-msvc") {
-        eprintln!("The MSVC toolchain is not yet supported by rustc_codegen_cranelift.");
-        eprintln!("Switch to the MinGW toolchain for Windows support.");
-        eprintln!("Hint: You can use `rustup set default-host x86_64-pc-windows-gnu` to");
-        eprintln!("set the global default target to MinGW");
-        process::exit(1);
-    }
-
     let cg_clif_build_dir = Path::new("target").join(&host_triple).join(&channel);
 
     if command == Command::Test {
