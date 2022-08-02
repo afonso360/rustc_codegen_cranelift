@@ -123,8 +123,18 @@ jobs:
         path: cg_clif.tar.xz
 
   windows:
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 60
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: windows-latest
+          # cross-compile from Windows to Windows MinGW
+          - os: windows-latest
+            env:
+              TARGET_TRIPLE: x86_64-pc-windows-gnu
 
     steps:
     - uses: actions/checkout@v3
@@ -149,12 +159,15 @@ jobs:
     #    path: target
     #    key: ${{ runner.os }}-cargo-build-target-${{ hashFiles('rust-toolchain', '**/Cargo.lock') }}
 
+    - name: Set MinGW as the default toolchain
+      if: matrix.env.TARGET_TRIPLE == 'x86_64-pc-windows-gnu'
+      run: rustup set default-host x86_64-pc-windows-gnu
+
     - name: Prepare dependencies
       run: |
         git config --global user.email "user@example.com"
         git config --global user.name "User"
         git config --global core.autocrlf false
-        rustup set default-host x86_64-pc-windows-gnu
         rustc y.rs -o y.exe -g
         ./y.exe prepare
 
@@ -188,5 +201,5 @@ jobs:
     - name: Upload prebuilt cg_clif
       uses: actions/upload-artifact@v2
       with:
-        name: cg_clif-${{ runner.os }}
+        name: cg_clif-${{ runner.os }}-${{ matrix.env.TARGET_TRIPLE }}
         path: cg_clif.tar
