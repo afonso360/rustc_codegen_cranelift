@@ -1201,9 +1201,10 @@ fn codegen_regular_intrinsic_call<'tcx>(
             let _catch_fn = catch_fn.load_scalar(fx);
 
             // FIXME once unwinding is supported, change this to actually catch panics
+            let vt = fx.bcx.func.dfg.value_type(data);
             let f_sig = fx.bcx.func.import_signature(Signature {
                 call_conv: fx.target_config.default_call_conv,
-                params: vec![AbiParam::new(fx.bcx.func.dfg.value_type(data))],
+                params: vec![AbiParam::new(vt)],
                 returns: vec![],
             });
 

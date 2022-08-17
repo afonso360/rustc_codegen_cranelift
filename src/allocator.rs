@@ -2,6 +2,7 @@
 // Adapted from rustc
 
 use crate::prelude::*;
+use cranelift_codegen::ir::UserFuncName;
 
 use rustc_ast::expand::allocator::{AllocatorKind, AllocatorTy, ALLOCATOR_METHODS};
 use rustc_session::config::OomStrategy;
@@ -78,7 +79,7 @@ fn codegen_inner(
         let callee_func_id = module.declare_function(&callee_name, Linkage::Import, &sig).unwrap();
 
         let mut ctx = Context::new();
-        ctx.func = Function::with_name_signature(ExternalName::user(0, 0), sig.clone());
+        ctx.func = Function::with_name_signature(UserFuncName::user(0, 0), sig.clone());
         {
             let mut func_ctx = FunctionBuilderContext::new();
             let mut bcx = FunctionBuilder::new(&mut ctx.func, &mut func_ctx);
@@ -116,7 +117,7 @@ fn codegen_inner(
     let callee_func_id = module.declare_function(callee_name, Linkage::Import, &sig).unwrap();
 
     let mut ctx = Context::new();
-    ctx.func = Function::with_name_signature(ExternalName::user(0, 0), sig);
+    ctx.func = Function::with_name_signature(UserFuncName::user(0, 0), sig);
     {
         let mut func_ctx = FunctionBuilderContext::new();
         let mut bcx = FunctionBuilder::new(&mut ctx.func, &mut func_ctx);

@@ -1,5 +1,6 @@
 //! Codegen of a single function
 
+use cranelift_codegen::ir::UserFuncName;
 use rustc_ast::InlineAsmOptions;
 use rustc_index::vec::IndexVec;
 use rustc_middle::ty::adjustment::PointerCast;
@@ -68,7 +69,7 @@ fn codegen_fn<'tcx>(
     let mut func_ctx = FunctionBuilderContext::new();
     let mut func = cached_func;
     func.clear();
-    func.name = ExternalName::user(0, func_id.as_u32());
+    func.name = UserFuncName::user(0, func_id.as_u32());
     func.signature = sig;
     func.collect_debug_info();
 
@@ -219,7 +220,7 @@ fn compile_fn<'tcx>(
         &clif_comments,
     );
 
-    if let Some(disasm) = &context.mach_compile_result.as_ref().unwrap().disasm {
+    if let Some(disasm) = &context.compiled_code().as_ref().unwrap().disasm {
         crate::pretty_clif::write_ir_file(
             tcx,
             || format!("{}.vcode", tcx.symbol_name(codegened_func.instance).name),

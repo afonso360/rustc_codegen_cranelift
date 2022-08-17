@@ -186,8 +186,9 @@ impl<'tcx> DebugContext<'tcx> {
 
         let mut func_end = 0;
 
-        let mcr = context.mach_compile_result.as_ref().unwrap();
-        for &MachSrcLoc { start, end, loc } in mcr.buffer.get_srclocs_sorted() {
+        let compiled_code = context.compiled_code();
+        let compile_result = compiled_code.as_ref().unwrap();
+        for &MachSrcLoc { start, end, loc } in compile_result.buffer.get_srclocs_sorted() {
             line_program.row().address_offset = u64::from(start);
             if !loc.is_default() {
                 let source_info = *source_info_set.get_index(loc.bits() as usize).unwrap();
@@ -200,7 +201,7 @@ impl<'tcx> DebugContext<'tcx> {
 
         line_program.end_sequence(u64::from(func_end));
 
-        let func_end = mcr.buffer.total_size();
+        let func_end = compile_result.buffer.total_size();
 
         assert_ne!(func_end, 0);
 
