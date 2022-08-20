@@ -38,6 +38,7 @@ use rustc_span::Symbol;
 
 use cranelift_codegen::isa::TargetIsa;
 use cranelift_codegen::settings::{self, Configurable};
+use target_lexicon::OperatingSystem;
 
 pub use crate::config::*;
 use crate::prelude::*;
@@ -244,6 +245,12 @@ fn build_isa(sess: &Session, backend_config: &BackendConfig) -> Box<dyn isa::Tar
     let mut flags_builder = settings::builder();
     flags_builder.enable("is_pic").unwrap();
     flags_builder.set("enable_probestack", "false").unwrap(); // __cranelift_probestack is not provided
+
+    if target_triple.operating_system == OperatingSystem::Windows {
+        flags_builder.set("enable_probestack", "true").unwrap();
+        flags_builder.set("enable_inline_probestack", "true").unwrap();
+    }
+
     let enable_verifier = if backend_config.enable_verifier { "true" } else { "false" };
     flags_builder.set("enable_verifier", enable_verifier).unwrap();
     flags_builder.set("regalloc_checker", enable_verifier).unwrap();
