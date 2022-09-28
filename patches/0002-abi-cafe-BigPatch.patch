@@ -1,0 +1,97 @@
+From 0dc493951506a96e055ebd3e25c25eb91a7572cd Mon Sep 17 00:00:00 2001
+From: Afonso Bordado <afonsobordado@az8.co>
+Date: Wed, 28 Sep 2022 11:36:16 +0100
+Subject: [PATCH] BigPatch
+
+---
+ src/report.rs | 32 +++++++++++---------------------
+ 1 file changed, 11 insertions(+), 21 deletions(-)
+
+diff --git a/src/report.rs b/src/report.rs
+index f582867..2c042cd 100644
+--- a/src/report.rs
++++ b/src/report.rs
+@@ -12,10 +12,7 @@ pub fn get_test_rules(test: &TestKey, caller: &dyn AbiImpl, callee: &dyn AbiImpl
+     use TestRunMode::*;
+ 
+     // By default, require tests to run completely and pass
+-    let mut result = TestRules {
+-        run: Check,
+-        check: Pass(Check),
+-    };
++    let mut result = TestRules { run: Check, check: Pass(Check) };
+ 
+     // Now apply specific custom expectations for platforms/suites
+     let is_c = caller.lang() == "c" || callee.lang() == "c";
+@@ -26,7 +23,9 @@ pub fn get_test_rules(test: &TestKey, caller: &dyn AbiImpl, callee: &dyn AbiImpl
+     // This is Bad! Ideally we should check for all clang<->gcc pairs but to start
+     // let's mark rust <-> C as disagreeing (because rust also disagrees with clang).
+     if !cfg!(any(target_arch = "aarch64", target_arch = "s390x"))
+-        && test.test_name == "ui128" && is_rust_and_c {
++        && test.test_name == "ui128"
++        && is_rust_and_c
++    {
+         result.check = Busted(Check);
+     }
+ 
+@@ -35,7 +34,7 @@ pub fn get_test_rules(test: &TestKey, caller: &dyn AbiImpl, callee: &dyn AbiImpl
+     // so let's keep running them and just ignore the result for now.
+     //
+     // Anyone who cares about this situation more can make the expectations more precise.
+-    if cfg!(windows) && test.test_name == "ui128" {
++    if cfg!(target_os = "windows") && test.test_name == "ui128" {
+         result.check = Random;
+     }
+ 
+@@ -48,12 +47,6 @@ pub fn get_test_rules(test: &TestKey, caller: &dyn AbiImpl, callee: &dyn AbiImpl
+     //
+     // THIS AREA RESERVED FOR VENDORS TO APPLY PATCHES
+ 
+-    // x86_64-pc-windows-gnu has some broken i128 tests that aren't disabled by default
+-    if cfg!(all(target_os = "windows", target_env = "gnu")) && test.test_name == "ui128" {
+-        result.run = Link;
+-        result.check = Pass(Link);
+-    }
+-
+     // END OF VENDOR RESERVED AREA
+     //
+     //
+@@ -78,10 +71,7 @@ pub enum BuildError {
+ pub enum CheckFailure {
+     #[error("test {0} {} field {2} mismatch \ncaller: {3:02X?} \ncallee: {4:02X?}", ARG_NAMES[*.1])]
+     InputFieldMismatch(usize, usize, usize, Vec<u8>, Vec<u8>),
+-    #[error(
+-        "test {0} {} field {2} mismatch \ncaller: {3:02X?} \ncallee: {4:02X?}",
+-        OUTPUT_NAME
+-    )]
++    #[error("test {0} {} field {2} mismatch \ncaller: {3:02X?} \ncallee: {4:02X?}", OUTPUT_NAME)]
+     OutputFieldMismatch(usize, usize, usize, Vec<u8>, Vec<u8>),
+     #[error("test {0} {} field count mismatch \ncaller: {2:#02X?} \ncallee: {3:#02X?}", ARG_NAMES[*.1])]
+     InputFieldCountMismatch(usize, usize, Vec<Vec<u8>>, Vec<Vec<u8>>),
+@@ -110,7 +100,9 @@ pub enum LinkError {
+ pub enum RunError {
+     #[error("test loading error (dynamic linking failed)\n{0}")]
+     LoadError(#[from] libloading::Error),
+-    #[error("wrong number of tests reported! \nExpected {0} \nGot (caller_in: {1}, caller_out: {2}, callee_in: {3}, callee_out: {4})")]
++    #[error(
++        "wrong number of tests reported! \nExpected {0} \nGot (caller_in: {1}, caller_out: {2}, callee_in: {3}, callee_out: {4})"
++    )]
+     TestCountMismatch(usize, usize, usize, usize, usize),
+ }
+ 
+@@ -354,10 +346,8 @@ impl FullReport {
+                 continue;
+             }
+ 
+-            let max_name_len = check_result
+-                .subtest_names
+-                .iter()
+-                .fold(0, |max, name| max.max(name.len()));
++            let max_name_len =
++                check_result.subtest_names.iter().fold(0, |max, name| max.max(name.len()));
+             for (subtest_name, result) in check_result.subtest_names.iter().zip(sub_results.iter())
+             {
+                 write!(f, "  {:width$} ", subtest_name, width = max_name_len)?;
+-- 
+2.25.1
+
