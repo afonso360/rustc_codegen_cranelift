@@ -8,15 +8,15 @@ crate-type = ["dylib"]
 
 [dependencies]
 # These have to be in sync with each other
-cranelift-codegen = { git = "https://github.com/bytecodealliance/wasmtime.git", branch = "release-12.0.0", version = "0.99", features = ["unwind", "all-arch"] }
-cranelift-frontend = { git = "https://github.com/bytecodealliance/wasmtime.git", branch = "release-12.0.0", version = "0.99" }
-cranelift-module = { git = "https://github.com/bytecodealliance/wasmtime.git", branch = "release-12.0.0", version = "0.99" }
-cranelift-native = { git = "https://github.com/bytecodealliance/wasmtime.git", branch = "release-12.0.0", version = "0.99" }
-cranelift-jit = { git = "https://github.com/bytecodealliance/wasmtime.git", branch = "release-12.0.0", version = "0.99", optional = true }
-cranelift-object = { git = "https://github.com/bytecodealliance/wasmtime.git", branch = "release-12.0.0", version = "0.99" }
+cranelift-codegen = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100", features = ["unwind", "all-arch"] }
+cranelift-frontend = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
+cranelift-module = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
+cranelift-native = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
+cranelift-jit = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100", optional = true }
+cranelift-object = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
 target-lexicon = "0.12.0"
-gimli = { version = "0.27.2", default-features = false, features = ["write"]}
-object = { version = "0.31.1", default-features = false, features = ["std", "read_core", "write", "archive", "coff", "elf", "macho", "pe"] }
+gimli = { version = "0.28", default-features = false, features = ["write"]}
+object = { version = "0.32", default-features = false, features = ["std", "read_core", "write", "archive", "coff", "elf", "macho", "pe"] }
 
 indexmap = "2.0.0"
 libloading = { version = "0.7.3", optional = true }
