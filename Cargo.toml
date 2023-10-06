@@ -8,12 +8,12 @@ crate-type = ["dylib"]
 
 [dependencies]
 # These have to be in sync with each other
-cranelift-codegen = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100", features = ["unwind", "all-arch"] }
-cranelift-frontend = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
-cranelift-module = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
-cranelift-native = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
-cranelift-jit = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100", optional = true }
-cranelift-object = { git = "https://github.com/bytecodealliance/wasmtime.git", version = "0.100" }
+cranelift-codegen = { git = "https://github.com/bytecodealliance/wasmtime/", branch = "release-14.0.0", version = "0.101", features = ["unwind", "all-arch"] }
+cranelift-frontend = { git = "https://github.com/bytecodealliance/wasmtime/", branch = "release-14.0.0", version = "0.101" }
+cranelift-module = { git = "https://github.com/bytecodealliance/wasmtime/", branch = "release-14.0.0", version = "0.101" }
+cranelift-native = { git = "https://github.com/bytecodealliance/wasmtime/", branch = "release-14.0.0", version = "0.101" }
+cranelift-jit = { git = "https://github.com/bytecodealliance/wasmtime/", branch = "release-14.0.0", version = "0.101", optional = true }
+cranelift-object = { git = "https://github.com/bytecodealliance/wasmtime/", branch = "release-14.0.0", version = "0.101" }
 target-lexicon = "0.12.0"
 gimli = { version = "0.28", default-features = false, features = ["write"]}
 object = { version = "0.32", default-features = false, features = ["std", "read_core", "write", "archive", "coff", "elf", "macho", "pe"] }
